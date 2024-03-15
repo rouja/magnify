@@ -46,7 +46,7 @@ export const LiveKitMeeting = ({
                 <ParticipantLayoutContext visible={true} >
                     <LayoutContextProvider onWidgetChange={setWidgetState}>
                         <div style={{ maxHeight: "100%", height: "100%", display: "grid", gridTemplateRows: "10fr 1fr", gridTemplateColumns: "0fr 6fr 0fr" }}>
-                            <ParticipantsLayout style={{ gridRow: "1/2", gridColumn: "1/2" }} />
+                            <ParticipantsLayout style={{ gridRow: "1/2", gridColumn: "1/2", overflow: "hidden"}} />
                             <div style={{ position: "relative", gridRow: "1/2", gridColumn: "2/3", overflow: "hidden" }}>
                                 <ConferenceLayout />
                             </div>
