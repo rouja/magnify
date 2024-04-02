@@ -1,15 +1,23 @@
-import { CameraDisabledIcon, CameraIcon, ChatIcon, LeaveIcon, MediaDeviceMenu, MicDisabledIcon, MicIcon, ScreenShareIcon, ScreenShareStopIcon, TrackToggleProps, UseChatToggleProps, useChatToggle, useDisconnectButton, useLayoutContext, useLocalParticipantPermissions, useRemoteParticipants, useTrackToggle } from "@livekit/components-react"
+import { CameraDisabledIcon, CameraIcon, ChatIcon, LeaveIcon, MediaDeviceMenu, MicDisabledIcon, MicIcon, ScreenShareIcon, ScreenShareStopIcon, TrackToggleProps, UseChatToggleProps, useChatToggle, useDisconnectButton, useLayoutContext, useLocalParticipantPermissions, useRemoteParticipants, useRoomContext, useTrackToggle } from "@livekit/components-react"
 import { Button, ToastProps, VariantType, defaultTokens } from "@openfun/cunningham-react"
 import { Track } from "livekit-client"
+import { Form, Formik, FormikHelpers } from 'formik';
 import { Card, DropButton } from "grommet"
-import { MouseEventHandler, useEffect, useState } from "react"
-import { ParticipantLayoutToggle, RaiseHand, useParticipantLayoutContext } from "./participants"
+import { MouseEventHandler, useState, useMemo } from "react"
+import { ParticipantLayoutToggle, RaiseHand } from "./participants"
 import { useAudioAllowed, useScreenSharingAllowed, useVideoAllowed } from "../utils/hooks"
 import { useIsMobile, useIsSmallSize } from "../../../hooks/useIsMobile"
 import { Event, useEventHandler } from "../../../services/livekit/events"
 import { LayoutToggle } from "../conference/conference"
-import { MoreIcon } from "../utils/icons"
+import { LockIcon, MoreIcon } from "../utils/icons"
 import { tokens } from "../../../cunningham-tokens"
+import { useModal } from "../../../context/modals";
+import { FormikInput } from '../../design-system/Formik/Input/FormikInput';
+import * as Yup from 'yup';
+import { FormikSubmitButton } from '../../design-system/Formik/SubmitButton/FormikSubmitButton';
+import { Box, Layer } from 'grommet';
+import { useErrors } from '../../../hooks/useErrors';
+
 
 
 
@@ -72,11 +80,17 @@ export const MagnifyControlBar = () => {
 }
 
 
+
+
 export const ControlBar = (props: ControlBarProps) => {
+    const modals = useModal()
 
     const barProps = { ...defaultControlBarProps, ...props }
     const p = useLocalParticipantPermissions()
     const handler = useEventHandler()
+    const room = useRoomContext()
+    const errors = useErrors();
+
 
     const videoEvent = new Event(p, { duration: 3000 } as ToastProps, (p): boolean => {
         return p?.canPublishSources.includes(1) ?? true
@@ -129,6 +143,33 @@ export const ControlBar = (props: ControlBarProps) => {
             <LayoutToggle />
             <RaiseHand />
         </div>
+const [open, setOpen] = useState(false);
+
+const handleOpen = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setOpen(true);
+};
+
+const handleClose = (event?: React.MouseEvent | React.KeyboardEvent) => {
+    event?.preventDefault();
+    setOpen(false);
+};
+
+const handleSubmit = (
+    values: EncryptionFormValues,
+) => {
+    const key = values.name
+    room.options.e2ee?.keyProvider.setKey(key)
+    room?.setE2EEEnabled(true)
+    handleClose();
+    
+}
+
+const logKey = () => {
+
+    console.log(room.options.e2ee?.keyProvider);
+}
+
 
     return (
         <div style={{ padding: "1em", display: 'flex', alignItems: "center", justifyContent: "center", gap: "1em" }}>
@@ -144,12 +185,12 @@ export const ControlBar = (props: ControlBarProps) => {
             }
 
             <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
-                <TrackToggle props={{ source: Track.Source.Microphone}} clickable={!barProps.audioControl ?? false} enabledIcon={<MicIcon />} disabledIcon={<MicDisabledIcon />} />
+                <TrackToggle props={{ source: Track.Source.Microphone }} clickable={!barProps.audioControl ?? false} enabledIcon={<MicIcon />} disabledIcon={<MicDisabledIcon />} />
                 <MediaDeviceMenu style={{ backgroundColor: `${tokens.theme.colors["primary-400"]}` }} kind="audioinput" />
             </Card>
 
             <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
-                <TrackToggle props={{ source: Track.Source.Camera}} clickable={!barProps.videoControl ?? false} enabledIcon={<CameraIcon />} disabledIcon={<CameraDisabledIcon />} />
+                <TrackToggle props={{ source: Track.Source.Camera }} clickable={!barProps.videoControl ?? false} enabledIcon={<CameraIcon />} disabledIcon={<CameraDisabledIcon />} />
                 <MediaDeviceMenu style={{ backgroundColor: `${tokens.theme.colors["primary-400"]}` }} kind="videoinput" />
             </Card>
 
@@ -167,7 +208,7 @@ export const ControlBar = (props: ControlBarProps) => {
             }
 
             {mobile &&
-                <DropButton dropContent={mobileSelector} dropProps={{justify: "center", alignContent: "center", alignSelf: "center", elevation: "none" }} margin={"none"} style={{ padding: "0.8em", display: "flex", justifyContent: "center", backgroundColor: `${tokens.theme.colors["primary-400"]}` }} dropAlign={{ top: "bottom" }} >
+                <DropButton dropContent={mobileSelector} dropProps={{ justify: "center", alignContent: "center", alignSelf: "center", elevation: "none" }} margin={"none"} style={{ padding: "0.8em", display: "flex", justifyContent: "center", backgroundColor: `${tokens.theme.colors["primary-400"]}` }} dropAlign={{ top: "bottom" }} >
                     <MoreIcon />
                 </DropButton>
             }
@@ -179,7 +220,64 @@ export const ControlBar = (props: ControlBarProps) => {
 
             }
 
+            <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
+                <Button color="primary" icon={<LockIcon />} onClick={handleOpen} />
+                {open && 
+                        <Layer
+                        id="confirmDelete"
+                        onClickOutside={handleClose}
+                        onEsc={handleClose}
+                        position="center"
+                        role="dialog"
+                    >
+                        <Box pad="medium" width="medium">
+            <EncryptionForm handleSubmit={handleSubmit} />
+            </Box>
+        </Layer>
+            }
+            </Card>
             <Leave />
         </div>
     )
 }
+
+
+
+interface EncryptionFormValues {
+    name: string;
+}
+
+const EncryptionForm = (EncryptionFormProps: any) => {
+    
+    const validationSchema = Yup.object().shape({ name: Yup.string().required() });
+
+    const initialValues: EncryptionFormValues = useMemo(
+        () => ({
+            name: '',
+        }),
+        [],
+    )
+
+    return (
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={EncryptionFormProps.handleSubmit}
+                    validationSchema={validationSchema}
+                >
+                    <Form>
+                        <FormikInput
+                            {...{ autoFocus: true }}
+                            fullWidth
+                            label={"clé de chiffrement"}
+                            name="name"
+                            text={"Entrez la clé de chiffrement "}
+                        />
+                        <FormikSubmitButton type={"button"}
+                            label={"Chiffrer la conférence"}
+                        />
+                    </Form>
+                </Formik>
+
+
+    );
+};

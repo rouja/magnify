@@ -8,7 +8,7 @@ import React, { Fragment, useContext, useEffect, useMemo, useState } from "react
 import { Box } from "grommet";
 import { LiveKitRoom, PreJoin } from "@livekit/components-react";
 import { defineMessages, useIntl } from "react-intl";
-import { Room, RoomOptions } from "livekit-client";
+import { Room, RoomOptions, ExternalE2EEKeyProvider } from "livekit-client";
 
 const messages = defineMessages({
   privateRoomError: {
@@ -53,6 +53,10 @@ export const RoomLiveKitView = () => {
     username: user?.name ?? '',
   })
 
+  const worker = new Worker(new URL('livekit-client/e2ee-worker', import.meta.url));
+  const keyProvider = new ExternalE2EEKeyProvider(); 
+
+
   const { data: room, isLoading, refetch } = useQuery([MagnifyQueryKeys.ROOM, id], () => {
     return RoomsRepository.get(id, user ? undefined : choices.username);
   }, { enabled: false });
@@ -82,18 +86,26 @@ export const RoomLiveKitView = () => {
       },
       dynacast: true,
       publishDefaults: {
-        videoCodec: 'vp9'
+        videoCodec: 'vp8'
+      },
+      e2ee: {
+        worker,
+        keyProvider : keyProvider
       }
     })
   }, [choices])
+  
+
+  const livekitRoom = new Room(roomOptions)
+  
   
   return (
     <div style={{ height: `100svh`, position: "fixed", width: "100svw" }}>
       {(
         ready ?
           !isLoading &&
-          <LiveKitRoom data-lk-theme="default" serverUrl={window.config.LIVEKIT_DOMAIN} token={room?.livekit.token} connect={true} room={new Room(roomOptions)} audio={choices.audioEnabled} video={choices.videoEnabled} onDisconnected={handleDisconnect} connectOptions={{ autoSubscribe: true }}>
-            <LiveKitMeeting token={room!.livekit.token} audioInput={choices.audioEnabled} videoInput={choices.videoEnabled} />
+          <LiveKitRoom data-lk-theme="default" serverUrl={window.config.LIVEKIT_DOMAIN} token={room?.livekit.token} connect={true} room={livekitRoom} audio={choices.audioEnabled} video={choices.videoEnabled} onDisconnected={handleDisconnect} connectOptions={{ autoSubscribe: true }}>
+            <LiveKitMeeting token={room!.livekit.token} keyProvider={keyProvider}/>
           </LiveKitRoom>
           :
           <Box style={{ backgroundColor: "black", width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -103,3 +115,5 @@ export const RoomLiveKitView = () => {
     </div>
   )
 }
+
+

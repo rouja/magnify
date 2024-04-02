@@ -9,13 +9,13 @@ import { RoomService, RoomServices } from '../../../services/livekit/room.servic
 import { EventHandlerProvider } from '../../../services/livekit/events';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { Box } from 'grommet';
+import { ExternalE2EEKeyProvider } from 'livekit-client';
 
 
 
 export interface LiveKitMeetingProps {
     token: string,
-    audioInput: boolean,
-    videoInput: boolean
+    keyProvider: ExternalE2EEKeyProvider
 }
 
 export const WaitingRoom = () => {
