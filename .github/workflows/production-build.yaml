@@ -6,10 +6,12 @@ on:
       - closed
     branches:
       - 'livekit'
+  push:
+    branches:
+      - 'livekit'
 
 jobs:
   docker:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       -

@@ -9,6 +9,8 @@ import { Box } from "grommet";
 import { LiveKitRoom, PreJoin } from "@livekit/components-react";
 import { defineMessages, useIntl } from "react-intl";
 import { Room, RoomOptions, ExternalE2EEKeyProvider } from "livekit-client";
+import { MagnifyRoomContextProvider } from "../../../context/room";
+import { Alert, VariantType } from "@openfun/cunningham-react";
 
 const messages = defineMessages({
   privateRoomError: {
@@ -62,6 +64,7 @@ export const RoomLiveKitView = () => {
   }, { enabled: false });
 
   useEffect(() => {
+    refetch()
     if (ready == true) {
       refetch()
     }
@@ -98,19 +101,24 @@ export const RoomLiveKitView = () => {
 
   const livekitRoom = new Room(roomOptions)
   
-  
+
   return (
     <div style={{ height: `100svh`, position: "fixed", width: "100svw" }}>
-      {(
+      {(!isLoading && (
         ready ?
-          !isLoading &&
-          <LiveKitRoom data-lk-theme="default" serverUrl={window.config.LIVEKIT_DOMAIN} token={room?.livekit.token} connect={true} room={livekitRoom} audio={choices.audioEnabled} video={choices.videoEnabled} onDisconnected={handleDisconnect} connectOptions={{ autoSubscribe: true }}>
-            <LiveKitMeeting token={room!.livekit.token} keyProvider={keyProvider}/>
+          room &&
+          <LiveKitRoom data-lk-theme="default" serverUrl={window.config.LIVEKIT_DOMAIN} token={room?.livekit.token} connect={true} room={new Room(roomOptions)} audio={false} video={false} onDisconnected={handleDisconnect} connectOptions={{ autoSubscribe: true }}>
+            <MagnifyRoomContextProvider room={room}>
+              <LiveKitMeeting token={room!.livekit.token} keyProvider={keyProvider} />
+            </MagnifyRoomContextProvider>
           </LiveKitRoom>
           :
-          <Box style={{ backgroundColor: "black", width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <PreJoin style={{ backgroundColor: "black" }} data-lk-theme="default" onSubmit={handlePreJoinSubmit} defaults={choices} persistUserChoices={true}></PreJoin>
+          <Box style={{ backgroundColor: "black", width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center",gap:"1em" }}>
+            <PreJoin style={{ backgroundColor: "black" }} data-lk-theme="default" onSubmit={handlePreJoinSubmit} defaults={choices} persistUserChoices={false}></PreJoin>
+            {room?.start_with_video_muted && <Alert canClose type={VariantType.WARNING}>Room configuration will mute your camera when entering the room </Alert>}
+            {room?.start_with_audio_muted && <Alert canClose type={VariantType.WARNING}>Room configuration will mute your microphone when entering the room</Alert>}
           </Box>
+      )
       )}
     </div>
   )
