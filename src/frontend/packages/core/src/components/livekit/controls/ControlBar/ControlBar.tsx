@@ -10,6 +10,7 @@ import { tokens } from "../../../../cunningham-tokens"
 import { LayoutToggle } from "../actions/togglers/LayoutToggle/LayoutToggle"
 import { HandRaiseToggle } from "../actions/togglers/HandRaiseToggle/HandRaiseToggle"
 import { ParticipantLayoutToggle } from "../actions/togglers/ParticipantLayoutToggle/ParticipantLayoutToggle"
+import { EncryptionToggle } from "../actions/togglers/EncryptionToggle/EncryptionToggle"
 
 
 
@@ -166,6 +167,9 @@ export const ControlBar = (props: ControlBarProps) => {
                 </Card>
 
             }
+            <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
+                <EncryptionToggle />
+            </Card>
 
             <Leave />
         </div>

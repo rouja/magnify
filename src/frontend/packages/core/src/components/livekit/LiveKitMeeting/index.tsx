@@ -7,6 +7,10 @@ import { VideoConference } from '../conference/VideoConference/VideoConference';
 import { ParticipantsLayout } from '../display/pannel/ParticipantsLayout/ParticipantsLayout';
 import { EventHandlerProvider } from '../../../services/livekit/events';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { Box } from 'grommet';
+import { ExternalE2EEKeyProvider } from 'livekit-client';
+
+
 import { useMagnifyRoomContext } from '../../../context/room';
 import { Track } from 'livekit-client';
 import { Overlay } from '../mobile/Overlay/Overlay';
@@ -16,8 +20,7 @@ import { ParticipantLayoutContext, useParticipantLayoutContext } from '../../../
 
 export interface LiveKitMeetingProps {
     token: string,
-    audioInput: boolean,
-    videoInput: boolean
+    keyProvider: ExternalE2EEKeyProvider
 }
 
 export const WaitingRoom = () => {
