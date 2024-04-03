@@ -167,7 +167,7 @@ export const ControlBar = (props: ControlBarProps) => {
                 </Card>
 
             }
-            <Card>
+            <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
                 <EncryptionToggle />
             </Card>
 

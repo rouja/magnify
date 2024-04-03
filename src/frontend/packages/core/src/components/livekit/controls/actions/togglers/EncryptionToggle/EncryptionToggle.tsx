@@ -8,6 +8,7 @@ import { FormikInput } from '../../../../../design-system/Formik/Input/FormikInp
 import * as Yup from 'yup';
 import { FormikSubmitButton } from '../../../../../design-system/Formik/SubmitButton/FormikSubmitButton';
 import { Box, Layer } from 'grommet';
+import { ExternalE2EEKeyProvider } from "livekit-client";
 
 
 export const EncryptionToggle = () => {
@@ -27,23 +28,16 @@ export const EncryptionToggle = () => {
     const handleSubmit = (
         values: EncryptionFormValues,
     ) => {
-        const key = values.name
-        room.options.e2ee?.keyProvider.setKey(key)
+        const key = values.name;
+        (room.options.e2ee?.keyProvider as ExternalE2EEKeyProvider).setKey(key)
         room?.setE2EEEnabled(true)
         handleClose();
 
     }
 
-    const logKey = () => {
-
-        console.log(room.options.e2ee?.keyProvider);
-    }
-
-
     return (
         <div>
             <Button color="primary" icon={<LockIcon />} onClick={handleOpen} />
-
             {open &&
                 <Layer
                     id="confirmDelete"
