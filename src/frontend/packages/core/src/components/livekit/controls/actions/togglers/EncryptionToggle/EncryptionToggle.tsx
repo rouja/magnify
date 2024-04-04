@@ -3,7 +3,7 @@ import { Button } from "@openfun/cunningham-react"
 import { Form, Formik } from 'formik';
 import { useState, useMemo } from "react"
 
-import { LockIcon } from "../../../../assets/icons"
+import { ShieldIcon } from "../../../../assets/icons"
 import { FormikInput } from '../../../../../design-system/Formik/Input/FormikInput';
 import * as Yup from 'yup';
 import { FormikSubmitButton } from '../../../../../design-system/Formik/SubmitButton/FormikSubmitButton';
@@ -14,10 +14,23 @@ import { ExternalE2EEKeyProvider } from "livekit-client";
 export const EncryptionToggle = () => {
     const room = useRoomContext()
     const [open, setOpen] = useState(false);
+    const [encrypted, setEncrypted] = useState(false);
+
+    const handleClick = (event: React.MouseEvent) => {
+        !encrypted?
+        handleOpen(event)
+        :
+        Unencrypt()
+    }
+
+    const Unencrypt = () => {
+        room?.setE2EEEnabled(false)
+        setEncrypted(!encrypted)
+    }
 
     const handleOpen = (event: React.MouseEvent) => {
         event.preventDefault();
-        setOpen(true);
+        setOpen(true)
     };
 
     const handleClose = (event?: React.MouseEvent | React.KeyboardEvent) => {
@@ -32,12 +45,13 @@ export const EncryptionToggle = () => {
         (room.options.e2ee?.keyProvider as ExternalE2EEKeyProvider).setKey(key)
         room?.setE2EEEnabled(true)
         handleClose();
+        setEncrypted(!encrypted)
 
     }
 
     return (
         <div>
-            <Button color="primary" icon={<LockIcon />} onClick={handleOpen} />
+            <Button color={encrypted? "secondary" : "primary"} icon={<ShieldIcon />} onClick={handleClick} />
             {open &&
                 <Layer
                     id="confirmDelete"
@@ -77,12 +91,13 @@ const EncryptionForm = (EncryptionFormProps: any) => {
             validationSchema={validationSchema}
         >
             <Form>
+                Lors du chiffrement, entrez une clé que vous avez partagé avec les autres participants via un moyen sécurisé. <br /><br/>
                 <FormikInput
                     {...{ autoFocus: true }}
                     fullWidth
                     label={"clé de chiffrement"}
                     name="name"
-                    text={"Entrez la clé de chiffrement "}
+                    text={"Entrez la clé de chiffrement"}
                 />
                 <FormikSubmitButton type={"button"}
                     label={"Chiffrer la conférence"}

@@ -118,6 +118,7 @@ export const ControlBar = (props: ControlBarProps) => {
         <div style={{ color: "white", backgroundColor: `${tokens.theme.colors["primary-400"]}`, flexDirection: "row", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <LayoutToggle />
             <HandRaiseToggle />
+            <EncryptionToggle />
         </div>
 
     return (
@@ -167,10 +168,11 @@ export const ControlBar = (props: ControlBarProps) => {
                 </Card>
 
             }
-            <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
-                <EncryptionToggle />
-            </Card>
-
+            {!mobile &&
+                <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
+                    <EncryptionToggle />
+                </Card>
+            }
             <Leave />
         </div>
     )
