@@ -150,7 +150,7 @@ export const ControlBar = (props: ControlBarProps) => {
                 </Card>
             }
 
-            {!mobile &&
+            {!mobile && localPermissions?.canPublishData &&
                 <Card style={{ borderRadius: "0.6em", display: "flex", flexDirection: "row" }} className="bg-primary-400">
                     <ChatToggle props={{}} />
                 </Card>
