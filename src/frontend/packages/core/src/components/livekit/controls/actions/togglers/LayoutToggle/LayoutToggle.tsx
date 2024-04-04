@@ -9,7 +9,7 @@ import { useState } from "react"
 
 export const LayoutToggle = () => {
     const context = useParticipantLayoutContext()
-    const [opened, setOpened] = useState(true)
+    const [opened, setOpened] = useState(false)
     const selector =
         <div className="Selector" style={{ backgroundColor: `${tokens.theme.colors["primary-400"]}` }}>
             <Button style={{ width: "100%" }} icon={<PinIcon />} onClick={() => {
