@@ -74,7 +74,7 @@ def create_video_grants(room: string, is_admin=False, is_temp_room=True):
     try:
         roomData = models.Room.objects.get(id=uuid.UUID(room))
 
-        chat_enabled = roomData.configuration['enableLobbyChat'] or is_admin
+        chat_enabled = roomData.configuration['enableLobbyChat']
         grants = api.VideoGrants(room_join=True, room=room, can_publish=False, can_subscribe=False, room_admin=is_admin,
                                  can_update_own_metadata=True, can_publish_sources=get_publish_sources(roomData, is_admin), can_publish_data=chat_enabled)
         if is_admin or not roomData.configuration["waitingRoomEnabled"]:
