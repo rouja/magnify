@@ -15,7 +15,7 @@ export const SpeakerLayout = ({ ...props }: SpeakerLayoutProps) => {
         props.notSpeakingTracks.length > 0 ?
             <div className="lk-focus-layout-wrapper" style={{ height: "100%" }}>
                 <FocusLayoutContainer>
-                    <CarouselLayout tracks={props.notSpeakingTracks} className="Carousel">
+                    <CarouselLayout tracks={props.notSpeakingTracks} style={{paddingTop: "0.2em", paddingLeft:"0.2em", paddingRight:"0.2em"}}>
                         <VideoDisplay style={{ width: !mobile ? '100%' : '' }} />
                     </CarouselLayout>
                     <div className="lk-grid-layout-wrapper GridContainer">

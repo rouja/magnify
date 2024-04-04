@@ -52,8 +52,6 @@ def get_nth_week_number(original_date):
 
 def get_publish_sources(room, is_admin: bool):
     sources = ["camera", "microphone", "screen_share", "screen_share_audio"]
-    if is_admin:
-        return sources
     if not room.configuration["screenSharingEnabled"]:
         sources.remove("screen_share")
         sources.remove("screen_share_audio")
