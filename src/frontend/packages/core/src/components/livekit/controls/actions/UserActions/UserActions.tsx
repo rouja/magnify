@@ -7,12 +7,43 @@ import { useState, useRef, useEffect } from "react"
 import { useIsMobile } from "../../../../../hooks/useIsMobile"
 import { RemoveUserIcon, MoreIcon, TickIcon } from "../../../assets/icons"
 import './style.css'
+import { defineMessages, useIntl } from 'react-intl';
+
 
 export interface UserActionInfo {
     participant: RemoteParticipant | LocalParticipant
 }
 
+const messages = defineMessages({
+    error: {
+        defaultMessage: 'An error occured',
+        description: 'An error occured',
+        id: 'components.room.error',
+    },
+    remove: {
+        defaultMessage: 'Do you want to remove ',
+        description: 'Remove user',
+        id: 'components.room.remove',
+    },
+    warning: {
+        defaultMessage: 'Warning',
+        description: 'Warning',
+        id: 'components.room.warning',
+    },
+    confirmation: {
+        defaultMessage: 'Are you sure you want to remove ',
+        description: 'Confirmation',
+        id: 'components.room.confirmation',
+    },
+    joinMessage: {
+        defaultMessage: ' wants to join the conference',
+        description: 'Message when a participant wants to join the conference',
+        id: 'components.rooms.participants.joinMessage',
+    }
+})
+
 export const UserActions = (infos: UserActionInfo) => {
+    const intl = useIntl()
     const roomService = useRoomService()
 
     const audio = useAudioAllowed(infos.participant.permissions)
@@ -20,9 +51,9 @@ export const UserActions = (infos: UserActionInfo) => {
     const screenSharing = useScreenSharingAllowed(infos.participant.permissions)
 
     const { toast } = useToastProvider()
-    const localParticipant = infos.participant    
+    const localParticipant = infos.participant
     const handleError = () => {
-        toast("An error occured", VariantType.ERROR)
+        toast(intl.formatMessage(messages.error), VariantType.ERROR)
     }
 
     const audioMute = () => {
@@ -50,7 +81,7 @@ export const UserActions = (infos: UserActionInfo) => {
 
     const removeParticipant = () => {
         const confirmRemoval = async () => {
-            await modals.deleteConfirmationModal({ children: `Voulez-vous retirer ${infos.participant.name} ?` })
+            await modals.deleteConfirmationModal({ children: intl.formatMessage(messages.remove) + `${infos.participant.name} ?` })
                 .then((decision: Decision) => {
                     if (decision == "delete") {
                         roomService.remove(infos.participant).catch(() => handleError())
@@ -101,7 +132,7 @@ export const UserActions = (infos: UserActionInfo) => {
 
     useEffect(() => {
         if (!infos.participant.permissions?.canSubscribe && JSON.parse(localParticipant.metadata || "{}").admin) {
-            toast(infos.participant.name + ' veut rejoindre la conférence', VariantType.INFO)
+            toast(infos.participant.name + intl.formatMessage(messages.joinMessage), VariantType.INFO)
         }
     }, [infos.participant])
 
@@ -113,8 +144,8 @@ export const UserActions = (infos: UserActionInfo) => {
                     <Popover parentRef={parentRef} onClickOutside={closePopover}>
                         {actionDiv}
                     </Popover>}
-                <Modal {...kickModal} size={ModalSize.SMALL} title={"Attention"}>
-                    {`Voulez-vous retirer ${infos.participant.name} ?`}
+                <Modal {...kickModal} size={ModalSize.SMALL} title={intl.formatMessage(messages.warning)}>
+                    {intl.formatMessage(messages.confirmation) + `${infos.participant.name} ?`}
                 </Modal>
                 <Button onClick={switchPopover} icon={<MoreIcon />} style={{ backgroundColor: "transparent" }} />
             </div>

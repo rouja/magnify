@@ -11,6 +11,7 @@ import { LayoutToggle } from "../actions/togglers/LayoutToggle/LayoutToggle"
 import { HandRaiseToggle } from "../actions/togglers/HandRaiseToggle/HandRaiseToggle"
 import { ParticipantLayoutToggle } from "../actions/togglers/ParticipantLayoutToggle/ParticipantLayoutToggle"
 import { EncryptionToggle } from "../actions/togglers/EncryptionToggle/EncryptionToggle"
+import { defineMessage, useIntl } from "react-intl"
 
 
 
@@ -63,6 +64,7 @@ const defaultControlBarProps: ControlBarProps = {
 }
 
 export const ControlBar = (props: ControlBarProps) => {
+    const intl = useIntl();
 
     const barProps = { ...defaultControlBarProps, ...props }
     const localPermissions = useLocalParticipantPermissions()

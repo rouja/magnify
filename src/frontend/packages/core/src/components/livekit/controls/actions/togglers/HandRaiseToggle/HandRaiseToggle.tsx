@@ -3,15 +3,13 @@ import { Button, VariantType, useToastProvider } from "@openfun/cunningham-react
 import { useState } from "react"
 import { HandRaisedIcon } from "../../../../assets/icons"
 
+
+
 export const HandRaiseToggle = () => {
     const localParticipant = useLocalParticipant().localParticipant
 
     const { toast } = useToastProvider()
     const [raised, setHand] = useState<boolean>(false)
-
-    const error = () => {
-        toast("Une erreur s'est produite", VariantType.ERROR)
-    }
 
     const sendRaise = () => {
         const data = JSON.parse(localParticipant.metadata || "{}")

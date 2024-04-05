@@ -6,6 +6,12 @@ import { GridIcon, LayoutIcon, PinIcon, SpeakerIcon, TickIcon } from "../../../.
 import { Layouts } from "../../../../conference/VideoConference/VideoConference"
 import './style.css'
 
+// const ToggleLayout(layout: any) => {
+//     const context = useParticipantLayoutContext()
+//     context?.setLayout(layout)
+
+// }
+
 export const LayoutToggle = () => {
     const context = useParticipantLayoutContext()
     const selector =
@@ -15,8 +21,9 @@ export const LayoutToggle = () => {
             <Button style={{ width: "100%" }} icon={<SpeakerIcon />} onClick={() => context?.setLayout(Layouts.SPEAKER)}>Speaker {(context.layout == Layouts.SPEAKER) ? <TickIcon /> : ""}</Button>
         </div>
     return (
-        <DropButton dropContent={selector} dropProps={{ justify: "center", alignContent: "center", alignSelf: "center", background: "transparent", elevation: "none" }} margin={"none"} style={{ padding: "0.8em", display: "flex", justifyContent: "center" }} dropAlign={{ top: "bottom" }} >
+        <DropButton dropContent={selector} dropProps={{ justify: "center", alignContent: "center", alignSelf: "center", background: "transparent", elevation: "none" }} margin={"none"} style={{ padding: "0.8em", display: "flex", justifyContent: "center" }} dropAlign={{ top: "bottom" }}>
             <LayoutIcon />
         </DropButton>
     )
 }
+

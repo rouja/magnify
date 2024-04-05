@@ -6,6 +6,16 @@ import { BulkActions } from "../../../controls/actions/BulkActions/BulkActions"
 import { UserActions } from "../../../controls/actions/UserActions/UserActions"
 import { useParticipantLayoutContext } from "../../../../../context/livekit/layout"
 import './style.css'
+import { defineMessages, useIntl } from "react-intl"
+
+const messages = defineMessages({
+    emptyList: {
+        defaultMessage: 'Seems like you\'re alone in there...',
+        description: 'The message to display when there is no one',
+        id: 'components.rooms.participants.emptyParticipantList',
+    }
+})
+
 
 export interface ParticipantLayoutOptions {
     visible? : boolean
@@ -20,6 +30,7 @@ interface MetaData {
 }
 
 export const ParticipantsLayout = ({ visible, ...props }: ParticipantLayoutProps) => {
+    const intl = useIntl()
     const remoteParticipants = useRemoteParticipants()
     const layoutContext = useParticipantLayoutContext()
     const localParticipant = useLocalParticipant()
@@ -39,7 +50,7 @@ export const ParticipantsLayout = ({ visible, ...props }: ParticipantLayoutProps
             {participants.length == 0 ?
                 <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <i>
-                        Il semble que vous soyez tout seul ici...
+                        {intl.formatMessage(messages.emptyList)}
                     </i>
                     <SleepIcon></SleepIcon>
                 </div> :
