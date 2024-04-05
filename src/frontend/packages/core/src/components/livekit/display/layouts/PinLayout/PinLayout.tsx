@@ -4,6 +4,21 @@ import { VideoDisplay } from "../../media/VideoDisplay/VideoDisplay"
 import { useIsMobile } from "../../../../../hooks/useIsMobile"
 import './style.css'
 import '../layouts.css'
+import {defineMessages, useIntl} from 'react-intl'
+
+const messages = defineMessages({
+Click: {
+        defaultMessage: 'Click',
+        description: 'click',
+        id: 'components.room.click',
+    },
+follow: {
+        defaultMessage: 'to follow a video',
+        description: 'follow a video',
+        id: 'components.room.follow',
+}
+    }
+)
 
 export interface PinLayoutProps extends HTMLAttributes<HTMLDivElement> {
     otherTracks: TrackReferenceOrPlaceholder[]
@@ -16,6 +31,7 @@ export interface PinnedTrackUtils {
 }
 
 export const PinLayout = ({ ...props }: PinLayoutProps) => {
+    const intl = useIntl()
     const mobile = useIsMobile()
     return (
         props.otherTracks.length ?
@@ -33,9 +49,9 @@ export const PinLayout = ({ ...props }: PinLayoutProps) => {
                             <div className="Placeholder" >
                                 <ParticipantPlaceholder style={{ width: "100%" }} />
                                 <div className="Instructions">
-                                    <h4>Appuyer </h4>
+                                    <h4>{intl.formatMessage(messages.Click)} </h4>
                                     <FocusToggleIcon />
-                                    <h4>pour suivre une vidéo</h4>
+                                    <h4>{intl.formatMessage(messages.follow)}</h4>
                                 </div>
 
                             </div>
