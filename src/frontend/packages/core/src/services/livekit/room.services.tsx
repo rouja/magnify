@@ -39,7 +39,7 @@ export interface Permissions {
     canPublish?: boolean,
     canPublishData?: boolean,
     canUpdateMetadata?: boolean,
-    canPublishSources?: string[]
+    canPublishSources: string[]
 }
 
 export class RoomService {
