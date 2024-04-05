@@ -7,12 +7,6 @@ import { Layouts } from "../../../../conference/VideoConference/VideoConference"
 import './style.css'
 import { useState } from "react"
 
-// const ToggleLayout(layout: any) => {
-//     const context = useParticipantLayoutContext()
-//     context?.setLayout(layout)
-
-// }
-
 export const LayoutToggle = () => {
     const context = useParticipantLayoutContext()
     const [opened, setOpened] = useState(false)
