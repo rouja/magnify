@@ -9,9 +9,33 @@ import * as Yup from 'yup';
 import { FormikSubmitButton } from '../../../../../design-system/Formik/SubmitButton/FormikSubmitButton';
 import { Box, Layer } from 'grommet';
 import { ExternalE2EEKeyProvider } from "livekit-client";
+import { defineMessages, useIntl } from 'react-intl';
 
+const messages = defineMessages({
+    encryptionExplanation: {
+      defaultMessage: 'When encrypting, enter a key that you have shared with other participants via a secure means.',
+      description: 'The explanation for the encrpytion',
+      id: 'components.room.encryption.explanation',
+    },
+    encryptionKey: {
+      id: 'components.room.encryption.key',
+      description: 'Key label for encryption',
+      defaultMessage: 'Encryption key',
+    },
+    encryptionQuery: {
+        id: "components.room.encrytpion.query",
+        description: "Query for encryption",
+        defaultMessage: "Enter the encryption key"
+    },
+    encryptionSubmit: {
+        id: "components.room.encryption.submit",
+        description: "Submit button for encryption",
+        defaultMessage: "Encrypt the conference"
+    }
+  });
 
 export const EncryptionToggle = () => {
+    const intl = useIntl();
     const room = useRoomContext()
     const [open, setOpen] = useState(false);
     const [encrypted, setEncrypted] = useState(false);
@@ -75,6 +99,7 @@ interface EncryptionFormValues {
 
 const EncryptionForm = (EncryptionFormProps: any) => {
 
+    const intl = useIntl();
     const validationSchema = Yup.object().shape({ name: Yup.string().required() });
 
     const initialValues: EncryptionFormValues = useMemo(
@@ -91,16 +116,16 @@ const EncryptionForm = (EncryptionFormProps: any) => {
             validationSchema={validationSchema}
         >
             <Form>
-                Lors du chiffrement, entrez une clé que vous avez partagé avec les autres participants via un moyen sécurisé. <br /><br/>
+                {intl.formatMessage(messages.encryptionExplanation)} <br /><br/>
                 <FormikInput
                     {...{ autoFocus: true }}
                     fullWidth
-                    label={"clé de chiffrement"}
+                    label={intl.formatMessage(messages.encryptionKey)}
                     name="name"
-                    text={"Entrez la clé de chiffrement"}
+                    text={intl.formatMessage(messages.encryptionQuery)}
                 />
                 <FormikSubmitButton type={"button"}
-                    label={"Chiffrer la conférence"}
+                    label={intl.formatMessage(messages.encryptionSubmit)}
                 />
             </Form>
         </Formik>

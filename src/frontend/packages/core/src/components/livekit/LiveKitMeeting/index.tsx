@@ -10,7 +10,7 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import { Box } from 'grommet';
 import { ExternalE2EEKeyProvider } from 'livekit-client';
 
-
+import {defineMessages, useIntl} from 'react-intl'
 import { useMagnifyRoomContext } from '../../../context/room';
 import { Track } from 'livekit-client';
 import { Overlay } from '../mobile/Overlay/Overlay';
@@ -18,16 +18,25 @@ import { MobileHeader } from '../mobile/MobileHeader/MobileHeader';
 import { RoomServiceContext } from '../../../context/livekit/roomservices';
 import { ParticipantLayoutContext, useParticipantLayoutContext } from '../../../context/livekit/layout';
 
+const messages = defineMessages({
+    emptyList: {
+        defaultMessage: 'Seems like you\'re alone in there...',
+        description: 'The message to display when there is no one',
+        id: 'components.rooms.participants.emptyParticipantList',
+    }
+})
+
 export interface LiveKitMeetingProps {
     token: string,
     keyProvider: ExternalE2EEKeyProvider
 }
 
 export const WaitingRoom = () => {
+    const intl = useIntl()
     return (
         <div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center", margin: "auto", flexDirection: "column" }}>
             <Loader size='medium' />
-            <h4 > En attente de validation par un modérateur</h4>
+            <h4 > {intl.formatMessage(messages.emptyList)}</h4>
         </div>
     )
 }
