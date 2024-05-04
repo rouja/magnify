@@ -10,7 +10,7 @@ import { useTranslations } from '../../../../i18n';
 import { KeycloakService } from '../../../../services';
 import { ResponsiveLayoutHeaderAvatar } from '../Header';
 import cover from './cover.svg';
-import logotu from './logo-tu.svg'
+import logotu from './Kanku_Kyokushin.svg.png'
 
 interface Props {
   urlLogo: string;

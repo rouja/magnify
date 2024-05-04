@@ -1,3 +1,3 @@
 export * from './SimpleLayout';
 export * from './cover.svg';
-export * from './logo-tu.svg'
+export * from './Kanku_Kyokushin.svg.png'
